@@ -57,6 +57,16 @@ export const ContactPostcard: React.FC = () => {
     }
   };
 
+  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (isMobile) {
+      e.preventDefault();
+      window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(
+        'Portfolio Inquiry - Yash Deshpande'
+      )}`;
+    }
+  };
+
   return (
     <section id="contact" className="relative py-20 px-4 sm:px-8 border-t border-[#2d5f44] overflow-hidden">
       {/* Decorative stars */}
@@ -102,9 +112,14 @@ export const ContactPostcard: React.FC = () => {
                 </span>
                 <div className="flex flex-wrap gap-2.5">
                   <a
-                    href={`mailto:${profile.email}`}
+                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                      profile.email
+                    )}&su=${encodeURIComponent('Portfolio Inquiry - Yash Deshpande')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={handleEmailClick}
                     className="paper-sheet bg-[#e63946] text-white font-mono-code text-xs px-3.5 py-2 rounded-xs flex items-center gap-1.5 hover:bg-[#d62839] transition-transform hover:-translate-y-0.5 cursor-pointer shadow-xs"
-                    title={`Email: ${profile.email}`}
+                    title={`Email Yash: ${profile.email}`}
                   >
                     <Mail className="w-4 h-4" />
                     <span>EMAIL ME</span>
@@ -273,7 +288,15 @@ export const ContactPostcard: React.FC = () => {
           </p>
           <p className="opacity-80">
             MIT Academy of Engineering (MITAOE), Pune · Batch 2024–2028 ·{' '}
-            <a href={`mailto:${profile.email}`} className="underline hover:text-white transition-colors">
+            <a
+              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
+                profile.email
+              )}&su=${encodeURIComponent('Portfolio Inquiry - Yash Deshpande')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={handleEmailClick}
+              className="underline hover:text-white transition-colors"
+            >
               {profile.email}
             </a>
           </p>
