@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --cutting-mat-base: #224933;
+    --cutting-mat-dark: #193826;
+    --grid-line-sub: rgba(226, 238, 178, 0.16);
+    --grid-line-main: rgba(235, 245, 192, 0.32);
+    --paper-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.38), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+    --paper-shadow-hover: 0 20px 35px -8px rgba(0, 0, 0, 0.45), 0 12px 14px -6px rgba(0, 0, 0, 0.35);
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    color: #242220;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Typography Helpers */
+.font-display {
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+}
+
+.font-hand {
+  font-family: 'Caveat', cursive;
+}
+
+.font-mono-code {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Realistic Cutting Mat / Pinboard Surface */
+.pinboard-surface {
+  background-color: var(--cutting-mat-base);
+  background-image: 
+    radial-gradient(circle at 50% 15%, rgba(45, 95, 68, 0.8) 0%, rgba(20, 48, 32, 0.95) 100%),
+    linear-gradient(var(--grid-line-main) 1.5px, transparent 1.5px),
+    linear-gradient(90deg, var(--grid-line-main) 1.5px, transparent 1.5px),
+    linear-gradient(var(--grid-line-sub) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-sub) 1px, transparent 1px);
+  background-size: 
+    100% 100%,
+    120px 120px,
+    120px 120px,
+    24px 24px,
+    24px 24px;
+  background-position: 
+    0 0,
+    -1px -1px,
+    -1px -1px,
+    -1px -1px,
+    -1px -1px;
+}
+
+/* Tactile Paper Textures & Depth */
+.paper-sheet {
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+  box-shadow: var(--paper-shadow);
+  transform-origin: center center;
+}
+
+.paper-sheet:hover {
+  box-shadow: var(--paper-shadow-hover);
+}
+
+.paper-white {
+  background-color: #faf8f5;
+  color: #1e2022;
+}
+
+.paper-cream {
+  background-color: #f5eedc;
+  color: #27211d;
+}
+
+.paper-kraft {
+  background-color: #7b4f2c;
+  background-image: 
+    radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 0),
+    linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 8px 8px, 16px 16px;
+  color: #faf5ed;
+  box-shadow: 0 10px 25px -5px rgba(45, 25, 10, 0.4), 0 8px 10px -6px rgba(45, 25, 10, 0.3);
+}
+
+.paper-yellow {
+  background-color: #ffeb3b;
+  color: #2c2005;
+}
+
+.paper-dark {
+  background-color: #151a1e;
+  color: #e2e8f0;
+}
+
+/* Translucent Tape Effect */
+.masking-tape {
+  background: rgba(254, 249, 215, 0.68);
+  backdrop-filter: blur(1.5px);
+  border-left: 1px dashed rgba(200, 185, 140, 0.5);
+  border-right: 1px dashed rgba(200, 185, 140, 0.5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+/* Realistic Pushpin */
+.pushpin-head {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), inset 0 2px 3px rgba(255, 255, 255, 0.6);
+}
+
+/* Paper clip */
+.paperclip-metal {
+  border: 3px solid #b4bcc4;
+  border-radius: 999px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Custom Scrollbar for Project Dossier Modal */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(18, 40, 27, 0.8);
+}
+::-webkit-scrollbar-thumb {
+  background: #ffeb3b;
+  border-radius: 4px;
+}
