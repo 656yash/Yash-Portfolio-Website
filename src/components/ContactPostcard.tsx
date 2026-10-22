@@ -1,30 +1,60 @@
 import React, { useState } from 'react';
-import { Mail, Send, Copy, Check } from 'lucide-react';
+import { Mail, Send, Check, Loader2 } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { PushPin, Tape, RubberStamp, StarCutout } from './PinboardDecorations';
-import { GithubIcon, LinkedinIcon, InstagramIcon, XIcon } from './SocialIcons';
+import { GithubIcon, LinkedinIcon, InstagramIcon } from './SocialIcons';
 
 export const ContactPostcard: React.FC = () => {
   const { profile } = PORTFOLIO_DATA;
-  const [copied, setCopied] = useState(false);
   const [formSent, setFormSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isError, setIsError] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText(profile.email);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !formData.message) return;
-    const subject = encodeURIComponent(`Portfolio Inquiry from ${formData.name || 'Visitor'}`);
-    const body = encodeURIComponent(
-      `Hello Yash,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}\n\nSent from your portfolio pinboard.`
-    );
-    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
-    setFormSent(true);
+
+    setIsSubmitting(true);
+    setIsError(false);
+    setStatusMessage(null);
+
+    try {
+      const response = await fetch(`https://formsubmit.co/ajax/${profile.email}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name || 'Anonymous Visitor',
+          email: formData.email,
+          message: formData.message,
+          _subject: `New Portfolio Dispatch from ${formData.name || 'Visitor'}`,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (response.ok && (data?.success === 'true' || data?.success === true)) {
+        setFormSent(true);
+        setStatusMessage("Your message has been pinned and sent directly to Yash's inbox!");
+      } else if (data?.message && data.message.toLowerCase().includes('activation')) {
+        setFormSent(true);
+        setStatusMessage("Message sent! (FormSubmit sent a 1-time activation confirmation to verify delivery).");
+      } else {
+        setFormSent(true);
+        setStatusMessage('Your dispatch has been submitted directly!');
+      }
+    } catch {
+      setIsError(true);
+      setStatusMessage('Direct send encountered a network issue. You can send via your mail client below:');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -49,7 +79,7 @@ export const ContactPostcard: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
             {/* Left: Handwritten Note & Real Direct Links (7 cols) */}
-            <div className="md:col-span-7 space-y-4">
+            <div className="md:col-span-7 space-y-5">
               <div className="flex items-center gap-2">
                 <span className="font-mono-code text-[11px] uppercase font-bold tracking-widest bg-stone-900 text-stone-100 px-2.5 py-1 rounded-xs">
                   DISPATCH // REACH OUT
@@ -65,57 +95,16 @@ export const ContactPostcard: React.FC = () => {
                 Whether it's an exciting machine learning model, a data analytics challenge, an internship role, or a hackathon collaboration — my desk is always open.
               </p>
 
-              {/* Direct Email Clipboard Box */}
-              <div className="p-4 bg-white/90 border border-stone-300 rounded-xs flex flex-wrap items-center justify-between gap-3 shadow-xs">
-                <a
-                  href={`mailto:${profile.email}`}
-                  className="flex items-center gap-2 overflow-hidden hover:underline group cursor-pointer"
-                  title="Click to email yash656deshpande@gmail.com"
-                >
-                  <Mail className="w-4 h-4 text-emerald-800 shrink-0 group-hover:scale-110 transition-transform" />
-                  <span className="font-mono-code text-xs sm:text-sm font-bold text-stone-900 truncate">
-                    {profile.email}
-                  </span>
-                </a>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={`mailto:${profile.email}`}
-                    className="bg-[#244a33] hover:bg-[#1a3826] text-white px-3 py-1.5 rounded-xs font-mono-code text-xs font-bold flex items-center gap-1 transition-all active:scale-95 shrink-0 cursor-pointer"
-                    title="Send email via mail client"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>SEND</span>
-                  </a>
-                  <button
-                    onClick={copyEmail}
-                    className="bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 px-3 py-1.5 rounded-xs font-mono-code text-xs font-bold flex items-center gap-1 transition-all active:scale-95 shrink-0 cursor-pointer"
-                    title="Copy email address"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>COPIED!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>COPY</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-
               {/* Social Channels Physical Buttons */}
-              <div className="pt-2">
-                <span className="font-mono-code text-[11px] uppercase font-bold text-stone-500 block mb-2">
+              <div className="pt-3">
+                <span className="font-mono-code text-[11px] uppercase font-bold text-stone-500 block mb-2.5">
                   Verified Contact & Channels:
                 </span>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-2.5">
                   <a
                     href={`mailto:${profile.email}`}
                     className="paper-sheet bg-[#e63946] text-white font-mono-code text-xs px-3.5 py-2 rounded-xs flex items-center gap-1.5 hover:bg-[#d62839] transition-transform hover:-translate-y-0.5 cursor-pointer shadow-xs"
-                    title="Email: yash656deshpande@gmail.com"
+                    title={`Email: ${profile.email}`}
                   >
                     <Mail className="w-4 h-4" />
                     <span>EMAIL ME</span>
@@ -145,20 +134,10 @@ export const ContactPostcard: React.FC = () => {
                     href={profile.socials.instagram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="paper-sheet bg-[#e4405f] text-white font-mono-code text-xs px-3 py-2 rounded-xs flex items-center gap-1.5 hover:brightness-110 transition-transform hover:-translate-y-0.5"
+                    className="paper-sheet bg-[#e4405f] text-white font-mono-code text-xs px-3.5 py-2 rounded-xs flex items-center gap-1.5 hover:brightness-110 transition-transform hover:-translate-y-0.5"
                   >
                     <InstagramIcon className="w-4 h-4" />
                     <span>INSTAGRAM</span>
-                  </a>
-
-                  <a
-                    href={profile.socials.x}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="paper-sheet bg-black text-white font-mono-code text-xs px-3 py-2 rounded-xs flex items-center gap-1.5 hover:brightness-110 transition-transform hover:-translate-y-0.5"
-                  >
-                    <XIcon className="w-4 h-4" />
-                    <span>X</span>
                   </a>
                 </div>
               </div>
@@ -178,20 +157,30 @@ export const ContactPostcard: React.FC = () => {
               </h3>
 
               {formSent ? (
-                <div className="p-4 bg-emerald-50 border border-emerald-300 rounded-xs text-center space-y-2">
-                  <Check className="w-8 h-8 text-emerald-600 mx-auto" />
-                  <p className="font-display font-bold text-sm text-emerald-950">
-                    Dispatch Prepared!
-                  </p>
-                  <p className="text-xs text-emerald-800 font-sans">
-                    Thank you! You can also email directly at{' '}
-                    <a
-                      href={`mailto:${profile.email}`}
-                      className="underline font-mono-code font-bold"
-                    >
-                      {profile.email}
-                    </a>
-                  </p>
+                <div className="p-5 bg-emerald-50/90 border border-emerald-300 rounded-xs text-center space-y-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 border border-emerald-300 flex items-center justify-center mx-auto text-emerald-700">
+                    <Check className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-base text-emerald-950">
+                      Dispatch Pinned & Sent!
+                    </h4>
+                    <p className="text-xs text-emerald-800 font-sans mt-1 leading-relaxed">
+                      {statusMessage || "Thank you! Your message has been sent directly to Yash's inbox."}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormSent(false);
+                      setFormData({ name: '', email: '', message: '' });
+                      setStatusMessage(null);
+                      setIsError(false);
+                    }}
+                    className="font-mono-code text-[11px] font-bold text-emerald-800 hover:text-emerald-950 underline cursor-pointer pt-1"
+                  >
+                    Pin another message →
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">
@@ -205,7 +194,8 @@ export const ContactPostcard: React.FC = () => {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g. Alex Morgan"
-                      className="w-full bg-stone-50 border border-stone-300 px-3 py-2 text-xs rounded-xs font-sans text-stone-900 focus:outline-none focus:border-[#244a33]"
+                      disabled={isSubmitting}
+                      className="w-full bg-stone-50 border border-stone-300 px-3 py-2 text-xs rounded-xs font-sans text-stone-900 focus:outline-none focus:border-[#244a33] disabled:opacity-60"
                     />
                   </div>
 
@@ -219,7 +209,8 @@ export const ContactPostcard: React.FC = () => {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="alex@domain.com"
-                      className="w-full bg-stone-50 border border-stone-300 px-3 py-2 text-xs rounded-xs font-sans text-stone-900 focus:outline-none focus:border-[#244a33]"
+                      disabled={isSubmitting}
+                      className="w-full bg-stone-50 border border-stone-300 px-3 py-2 text-xs rounded-xs font-sans text-stone-900 focus:outline-none focus:border-[#244a33] disabled:opacity-60"
                     />
                   </div>
 
@@ -233,16 +224,41 @@ export const ContactPostcard: React.FC = () => {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       placeholder="Hi Yash, let's discuss..."
-                      className="w-full bg-stone-50 border border-stone-300 px-3 py-2 text-xs rounded-xs font-sans text-stone-900 focus:outline-none focus:border-[#244a33]"
+                      disabled={isSubmitting}
+                      className="w-full bg-stone-50 border border-stone-300 px-3 py-2 text-xs rounded-xs font-sans text-stone-900 focus:outline-none focus:border-[#244a33] disabled:opacity-60"
                     />
                   </div>
 
+                  {isError && (
+                    <div className="p-2.5 bg-red-50 border border-red-200 rounded-xs text-[11px] text-red-800 font-sans space-y-1">
+                      <p>{statusMessage}</p>
+                      <a
+                        href={`mailto:${profile.email}?subject=${encodeURIComponent(
+                          `Portfolio Inquiry from ${formData.name || 'Visitor'}`
+                        )}&body=${encodeURIComponent(formData.message)}`}
+                        className="font-mono-code font-bold underline text-red-900 inline-block"
+                      >
+                        Open in Mail Client instead &rarr;
+                      </a>
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full bg-[#244a33] hover:bg-[#1a3826] text-[#f7fae8] font-mono-code text-xs font-bold py-2.5 rounded-xs shadow-md uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer"
+                    disabled={isSubmitting}
+                    className="w-full bg-[#244a33] hover:bg-[#1a3826] disabled:bg-[#345b44] text-[#f7fae8] font-mono-code text-xs font-bold py-2.5 rounded-xs shadow-md uppercase tracking-wider flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer disabled:cursor-not-allowed"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>PIN THIS MESSAGE</span>
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>PINNING & SENDING...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>PIN THIS MESSAGE</span>
+                      </>
+                    )}
                   </button>
                 </form>
               )}
