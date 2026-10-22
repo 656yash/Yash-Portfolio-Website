@@ -209,21 +209,9 @@ export const HeroPinboard: React.FC<Props> = ({
             </a>
 
             <a
-              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-                profile.email
-              )}&su=${encodeURIComponent('Portfolio Inquiry - Yash Deshpande')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => {
-                const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-                if (isMobile) {
-                  e.preventDefault();
-                  window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(
-                    'Portfolio Inquiry - Yash Deshpande'
-                  )}`;
-                }
-              }}
-              className="paper-sheet paper-white p-2.5 rounded-xs border border-stone-300 text-red-600 hover:text-red-800 hover:scale-110 transition-transform shadow-sm"
+              href={`mailto:${profile.email}?subject=${encodeURIComponent('Inquiry for Yash Deshpande')}`}
+              onClick={() => onContact()}
+              className="paper-sheet paper-white p-2.5 rounded-xs border border-stone-300 text-red-600 hover:text-red-800 hover:scale-110 transition-transform shadow-sm cursor-pointer"
               aria-label="Email Yash"
               title={`Email: ${profile.email}`}
             >

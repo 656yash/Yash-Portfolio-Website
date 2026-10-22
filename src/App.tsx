@@ -47,7 +47,7 @@ export function App() {
   }, []);
 
   return (
-    <div className="min-h-[100dvh] pinboard-surface flex flex-col relative text-[#222]">
+    <div className="min-h-[100dvh] pinboard-surface flex flex-col relative text-[#222] overflow-x-hidden">
       {/* Cutting Mat Metric Ruler Top Edge */}
       <div className="w-full h-4 bg-[#193826] border-b border-[#2d5f44] flex items-center justify-between px-2 overflow-hidden select-none pointer-events-none opacity-60">
         {[...Array(30)].map((_, i) => (

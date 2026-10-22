@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Canonical Sitemap
+Sitemap: https://yash-portfolio-website.vercel.app/sitemap.xml

@@ -57,14 +57,15 @@ export const ContactPostcard: React.FC = () => {
     }
   };
 
-  const handleEmailClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-    if (isMobile) {
-      e.preventDefault();
-      window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(
-        'Portfolio Inquiry - Yash Deshpande'
-      )}`;
-    }
+  const handleEmailMe = () => {
+    window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent('Inquiry for Yash Deshpande')}`;
+    setTimeout(() => {
+      const msgInput = document.getElementById('dispatch-message');
+      if (msgInput) {
+        msgInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        msgInput.focus();
+      }
+    }, 150);
   };
 
   return (
@@ -112,14 +113,11 @@ export const ContactPostcard: React.FC = () => {
                 </span>
                 <div className="flex flex-wrap gap-2.5">
                   <a
-                    href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-                      profile.email
-                    )}&su=${encodeURIComponent('Portfolio Inquiry - Yash Deshpande')}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={handleEmailClick}
-                    className="paper-sheet bg-[#e63946] text-white font-mono-code text-xs px-3.5 py-2 rounded-xs flex items-center gap-1.5 hover:bg-[#d62839] transition-transform hover:-translate-y-0.5 cursor-pointer shadow-xs"
-                    title={`Email Yash: ${profile.email}`}
+                    href={`mailto:${profile.email}?subject=${encodeURIComponent('Inquiry for Yash Deshpande')}`}
+                    onClick={handleEmailMe}
+                    id="postcard-email-me-btn"
+                    className="paper-sheet bg-[#e63946] text-white font-mono-code text-xs px-3.5 py-2 rounded-xs flex items-center gap-1.5 hover:bg-[#d62839] transition-transform hover:-translate-y-0.5 cursor-pointer shadow-xs active:scale-95"
+                    title={`Email: ${profile.email}`}
                   >
                     <Mail className="w-4 h-4" />
                     <span>EMAIL ME</span>
@@ -200,10 +198,11 @@ export const ContactPostcard: React.FC = () => {
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-3">
                   <div>
-                    <label className="block font-mono-code text-[11px] text-stone-600 mb-1">
+                    <label htmlFor="dispatch-name" className="block font-mono-code text-[11px] text-stone-600 mb-1">
                       YOUR NAME
                     </label>
                     <input
+                      id="dispatch-name"
                       type="text"
                       required
                       value={formData.name}
@@ -215,10 +214,11 @@ export const ContactPostcard: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-mono-code text-[11px] text-stone-600 mb-1">
+                    <label htmlFor="dispatch-email" className="block font-mono-code text-[11px] text-stone-600 mb-1">
                       YOUR EMAIL
                     </label>
                     <input
+                      id="dispatch-email"
                       type="email"
                       required
                       value={formData.email}
@@ -230,10 +230,11 @@ export const ContactPostcard: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block font-mono-code text-[11px] text-stone-600 mb-1">
+                    <label htmlFor="dispatch-message" className="block font-mono-code text-[11px] text-stone-600 mb-1">
                       NOTE / MESSAGE
                     </label>
                     <textarea
+                      id="dispatch-message"
                       rows={3}
                       required
                       value={formData.message}
@@ -288,15 +289,7 @@ export const ContactPostcard: React.FC = () => {
           </p>
           <p className="opacity-80">
             MIT Academy of Engineering (MITAOE), Pune · Batch 2024–2028 ·{' '}
-            <a
-              href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
-                profile.email
-              )}&su=${encodeURIComponent('Portfolio Inquiry - Yash Deshpande')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={handleEmailClick}
-              className="underline hover:text-white transition-colors"
-            >
+            <a href={`mailto:${profile.email}`} className="underline hover:text-white transition-colors">
               {profile.email}
             </a>
           </p>
