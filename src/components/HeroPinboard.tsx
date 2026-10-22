@@ -212,7 +212,7 @@ export const HeroPinboard: React.FC<Props> = ({
               href={`mailto:${profile.email}`}
               className="paper-sheet paper-white p-2.5 rounded-xs border border-stone-300 text-red-600 hover:text-red-800 hover:scale-110 transition-transform shadow-sm"
               aria-label="Email Yash"
-              title="Send Email"
+              title={`Email: ${profile.email}`}
             >
               <Mail className="w-5 h-5" />
             </a>

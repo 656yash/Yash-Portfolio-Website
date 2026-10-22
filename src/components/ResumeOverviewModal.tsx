@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Printer, Download, ExternalLink, FileText, Eye } from 'lucide-react';
+import { X, Printer, Download, ExternalLink, FileText, Eye, Mail } from 'lucide-react';
 import { PORTFOLIO_DATA } from '../data/portfolioData';
 import { PushPin, Tape, RubberStamp } from './PinboardDecorations';
 
@@ -345,6 +345,15 @@ export const ResumeOverviewModal: React.FC<Props> = ({ isOpen, onClose }) => {
             >
               <ExternalLink className="w-3.5 h-3.5" />
               <span>Open in New Tab</span>
+            </a>
+
+            <a
+              href={`mailto:${profile.email}?subject=${encodeURIComponent('Connecting regarding your Resume / Portfolio')}`}
+              className="inline-flex items-center gap-1.5 bg-[#8f653e] hover:bg-[#785331] text-[#faf5ed] font-mono-code text-xs font-bold px-4 py-2 rounded-xs shadow-md active:scale-95 transition-all cursor-pointer border border-[#b4885c]"
+              title="Email yash656deshpande@gmail.com"
+            >
+              <Mail className="w-3.5 h-3.5" />
+              <span>Email Candidate</span>
             </a>
 
             <a

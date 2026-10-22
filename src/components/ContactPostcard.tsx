@@ -19,6 +19,11 @@ export const ContactPostcard: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.email || !formData.message) return;
+    const subject = encodeURIComponent(`Portfolio Inquiry from ${formData.name || 'Visitor'}`);
+    const body = encodeURIComponent(
+      `Hello Yash,\n\nName: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}\n\nSent from your portfolio pinboard.`
+    );
+    window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
     setFormSent(true);
   };
 
@@ -61,38 +66,61 @@ export const ContactPostcard: React.FC = () => {
               </p>
 
               {/* Direct Email Clipboard Box */}
-              <div className="p-4 bg-white/90 border border-stone-300 rounded-xs flex items-center justify-between gap-3 shadow-xs">
-                <div className="flex items-center gap-2 overflow-hidden">
-                  <Mail className="w-4 h-4 text-emerald-800 shrink-0" />
+              <div className="p-4 bg-white/90 border border-stone-300 rounded-xs flex flex-wrap items-center justify-between gap-3 shadow-xs">
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="flex items-center gap-2 overflow-hidden hover:underline group cursor-pointer"
+                  title="Click to email yash656deshpande@gmail.com"
+                >
+                  <Mail className="w-4 h-4 text-emerald-800 shrink-0 group-hover:scale-110 transition-transform" />
                   <span className="font-mono-code text-xs sm:text-sm font-bold text-stone-900 truncate">
                     {profile.email}
                   </span>
+                </a>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="bg-[#244a33] hover:bg-[#1a3826] text-white px-3 py-1.5 rounded-xs font-mono-code text-xs font-bold flex items-center gap-1 transition-all active:scale-95 shrink-0 cursor-pointer"
+                    title="Send email via mail client"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>SEND</span>
+                  </a>
+                  <button
+                    onClick={copyEmail}
+                    className="bg-stone-100 hover:bg-stone-200 text-stone-800 border border-stone-300 px-3 py-1.5 rounded-xs font-mono-code text-xs font-bold flex items-center gap-1 transition-all active:scale-95 shrink-0 cursor-pointer"
+                    title="Copy email address"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>COPIED!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>COPY</span>
+                      </>
+                    )}
+                  </button>
                 </div>
-                <button
-                  onClick={copyEmail}
-                  className="bg-[#244a33] hover:bg-[#1a3826] text-white px-3 py-1.5 rounded-xs font-mono-code text-xs font-bold flex items-center gap-1 transition-all active:scale-95 shrink-0 cursor-pointer"
-                  title="Copy email address"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="w-3.5 h-3.5 text-emerald-300" />
-                      <span>COPIED!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-3.5 h-3.5" />
-                      <span>COPY</span>
-                    </>
-                  )}
-                </button>
               </div>
 
               {/* Social Channels Physical Buttons */}
               <div className="pt-2">
                 <span className="font-mono-code text-[11px] uppercase font-bold text-stone-500 block mb-2">
-                  Verified Social Channels:
+                  Verified Contact & Channels:
                 </span>
                 <div className="flex flex-wrap gap-2">
+                  <a
+                    href={`mailto:${profile.email}`}
+                    className="paper-sheet bg-[#e63946] text-white font-mono-code text-xs px-3.5 py-2 rounded-xs flex items-center gap-1.5 hover:bg-[#d62839] transition-transform hover:-translate-y-0.5 cursor-pointer shadow-xs"
+                    title="Email: yash656deshpande@gmail.com"
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span>EMAIL ME</span>
+                  </a>
+
                   <a
                     href={profile.socials.github}
                     target="_blank"
@@ -228,7 +256,10 @@ export const ContactPostcard: React.FC = () => {
             Designed & Assembled as an Interactive Creative Pinboard for Yash Deshpande.
           </p>
           <p className="opacity-80">
-            MIT Academy of Engineering (MITAOE), Pune · Batch 2024–2028 · Data Science & Python Development
+            MIT Academy of Engineering (MITAOE), Pune · Batch 2024–2028 ·{' '}
+            <a href={`mailto:${profile.email}`} className="underline hover:text-white transition-colors">
+              {profile.email}
+            </a>
           </p>
         </footer>
       </div>
